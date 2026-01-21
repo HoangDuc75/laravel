@@ -57,7 +57,6 @@
         document.querySelector('form').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Lấy dữ liệu từ form
             const product = {
                 id: Date.now(),
                 name: document.getElementById('name').value,
@@ -67,16 +66,6 @@
                 created_at: new Date().toISOString()
             };
             
-            // Lấy danh sách sản phẩm từ localStorage
-            let products = JSON.parse(localStorage.getItem('products') || '[]');
-            
-            // Thêm sản phẩm mới
-            products.push(product);
-            
-            // Lưu lại vào localStorage
-            localStorage.setItem('products', JSON.stringify(products));
-            
-            // Chuyển về trang danh sách
             window.location.href = "{{ route('product.index') }}";
         });
     </script>
