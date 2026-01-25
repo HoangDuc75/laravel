@@ -1,15 +1,27 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProductController;
 
 Route::get('/', function () {
     return view('home');
 })->name('home');
 
+// Login Routes
+Route::prefix('auth')->group(function () {
+    Route::get('/register', [UserController::class, 'showRegisterForm'])->name('register');
+
+    Route::post('/register', [UserController::class, 'checkRegister'])->name('register.submit');
+    
+    Route::get('/login', [UserController::class, 'showLoginForm'])->name('login');
+
+    Route::post('/login', [UserController::class, 'checkLogin'])->name('login.submit');
+});
+
+// Product Routes
 Route::prefix('product')->group(function () {
-    Route::get('/', function () {
-        return view('product.index');
-    })->name('product.index');
+    Route::get('/', [ProductController::class, 'index'])->name('product.index');
     
     Route::get('/add', function () {
         return view('product.add');
@@ -22,6 +34,8 @@ Route::prefix('product')->group(function () {
     Route::get('/{id?}', function ($id = '123') {
         return view('product.detail', ['id' => $id]);
     })->name('product.detail');
+
+    Route::get('/detail/{id?}', [ProductController::class, 'getDetail'])->name('product.detail');
 });
 
 Route::get('/sinhvien/{name?}/{mssv?}', function ($name = 'Hoàng Văn Đức', $mssv = '0005067') {
