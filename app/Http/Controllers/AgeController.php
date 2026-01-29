@@ -6,17 +6,11 @@ use Illuminate\Http\Request;
 
 class AgeController extends Controller
 {
-    /**
-     * Hiển thị form nhập tuổi
-     */
     public function showAgeForm()
     {
         return view('age.form');
     }
 
-    /**
-     * Kiểm tra và lưu tuổi vào session
-     */
     public function checkAge(Request $request)
     {
         // Validate dữ liệu nhập vào
@@ -36,10 +30,7 @@ class AgeController extends Controller
 
         return redirect()->route('age.success')->with('success', 'Tuổi đã được lưu vào session. Tuổi của bạn: ' . $age);
     }
-
-    /**
-     * Trang thành công - được bảo vệ bởi middleware CheckAge
-     */
+    
     public function successAge()
     {
         return view('age.success');
