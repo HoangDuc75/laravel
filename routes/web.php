@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
+use App\Http\Middleware\CheckTimeAccess;
 
 Route::get('/', function () {
     return view('home');
@@ -20,7 +21,7 @@ Route::prefix('auth')->group(function () {
 });
 
 // Product Routes
-Route::prefix('product')->group(function () {
+Route::prefix('product')->middleware(CheckTimeAccess::class)->group(function () {
     Route::get('/', [ProductController::class, 'index'])->name('product.index');
     
     Route::get('/add', function () {
