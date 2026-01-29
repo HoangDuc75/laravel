@@ -3,7 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\AgeController;
 use App\Http\Middleware\CheckTimeAccess;
+use App\Http\Middleware\CheckAge;
 
 Route::get('/', function () {
     return view('home');
@@ -18,6 +20,15 @@ Route::prefix('auth')->group(function () {
     Route::get('/login', [UserController::class, 'showLoginForm'])->name('login');
 
     Route::post('/login', [UserController::class, 'checkLogin'])->name('login.submit');
+});
+
+// Check age
+Route::prefix('age')->controller(AgeController::class)->group(function () {
+    Route::get('/form', 'showAgeForm')->name('age.form');
+    
+    Route::post('/verify', 'checkAge')->name('age.verify');
+    
+    Route::get('/success', 'successAge')->middleware(CheckAge::class)->name('age.success');
 });
 
 // Product Routes
