@@ -1,57 +1,74 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Danh sách sản phẩm</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        h1 { color: #333; margin: 0; }
-        .button-group { display: flex; justify-content: space-between; gap: 15px; margin-bottom: 20px; }
-        .product-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
-        .product-card { border: 1px solid #ddd; padding: 15px; border-radius: 8px; }
-        .product-card h3 { margin-top: 0; color: #2c3e50; }
-        .btn { padding: 10px 20px; max-width: 200px; background: #3490dc; color: white; text-decoration: none; border-radius: 4px; display: inline-block; border: none; cursor: pointer; font-size: 1em; }
-        .btn:hover { background: #2779bd; }
-        .btn-add { background: #38c172; flex: 1; text-align: center; }
-        .btn-add:hover { background: #2d995b; }
-        .btn-home { background: #6c757d; flex: 1; text-align: center; }
-        .btn-home:hover { background: #5a6268; }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1>{{ $title }}</h1>
+@extends('layouts.admin')
+
+@section('content')
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Danh sách sản phẩm</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+            <li class="breadcrumb-item active">Products</li>
+          </ol>
+        </div>
+      </div>
     </div>
-    
-    <div class="button-group">
-        <a href="{{ route('product.add') }}" class="btn btn-add">+ Thêm sản phẩm</a>
-        <a href="{{ route('home') }}" class="btn btn-home">Trở về trang home</a>
-    </div>
-    
-    <div class="product-list" id="productList">
-        @foreach($products as $product)
-            <div class="product-card">
+  </section>
 
-                <img src="{{ $product['image'] }}"
-                    alt="{{ $product['name'] }}"
-                    style="width: 100%; height: 150px; object-fit: cover; border-radius: 4px; margin-bottom: 10px;">
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+      @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+      @endif
 
-                <h3>{{ $product['name'] }}</h3>
-
-                <p>{{ $product['content'] }}</p>
-
-                <p>
-                    <strong>Giá:</strong> {{ $product['price'] }}
-                </p>
-
-                <a href="{{ route('product.detail', $product['id']) }}" class="btn">
-                    Xem chi tiết
-                </a>
-
-            </div>
-        @endforeach
-    </div>
-</body>
-</html>
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h3 class="card-title">Products</h3>
+          <a href="{{ route('product.create') }}" class="btn btn-primary">Thêm sản phẩm</a>
+        </div>
+        <div class="card-body table-responsive p-0">
+          <table class="table table-hover table-striped table-bordered text-nowrap">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Tên</th>
+                <th>Giá</th>
+                <th>Kho</th>
+                <th>Hành động</th>
+              </tr>
+            </thead>
+            <tbody>
+              @forelse($products as $product)
+                <tr>
+                  <td>{{ $product->id }}</td>
+                  <td>{{ $product->name }}</td>
+                  <td>{{ number_format($product->price, 0, ',', '.') }}</td>
+                  <td>{{ $product->stock }}</td>
+                  <td>
+                    <a href="{{ route('product.show', $product->id) }}" class="btn btn-sm btn-info">Xem</a>
+                    <a href="{{ route('product.edit', $product->id) }}" class="btn btn-sm btn-warning">Sửa</a>
+                    <form action="{{ route('product.destroy', $product->id) }}" method="POST" style="display:inline-block">
+                      @csrf
+                      @method('DELETE')
+                      <button class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc muốn xóa?')">Xóa</button>
+                    </form>
+                  </td>
+                </tr>
+              @empty
+                <tr><td colspan="5">Không có sản phẩm</td></tr>
+              @endforelse
+            </tbody>
+          </table>
+        </div>
+        <div class="card-footer clearfix">
+          {{ $products->links() }}
+        </div>
+      </div>
+      </div>
+      </div>
+  </section>
+@endsection

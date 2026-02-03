@@ -31,23 +31,14 @@ Route::prefix('age')->controller(AgeController::class)->group(function () {
     Route::get('/success', 'successAge')->middleware(CheckAge::class)->name('age.success');
 });
 
-// Product Routes
-Route::prefix('product')->middleware(CheckTimeAccess::class)->group(function () {
-    Route::get('/', [ProductController::class, 'index'])->name('product.index');
-    
-    Route::get('/add', function () {
-        return view('product.add');
-    })->name('product.add');
-    
-    Route::post('/add', function () {
-        return redirect()->route('product.index')->with('success', 'Đã thêm sản phẩm thành công!');
-    })->name('product.store');
-    
-    Route::get('/{id?}', function ($id = '123') {
-        return view('product.detail', ['id' => $id]);
-    })->name('product.detail');
+// layouts
+Route::get('/admin', function () {
+    return view('layouts.admin');
+})->name('admin');
 
-    Route::get('/detail/{id?}', [ProductController::class, 'getDetail'])->name('product.detail');
+// Product Routes (resourceful)
+Route::middleware(CheckTimeAccess::class)->group(function () {
+    Route::resource('product', ProductController::class);
 });
 
 Route::get('/sinhvien/{name?}/{mssv?}', function ($name = 'Hoàng Văn Đức', $mssv = '0005067') {
