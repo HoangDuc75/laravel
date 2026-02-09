@@ -133,16 +133,35 @@
     <div class="register-container">
         <h1>Đăng Ký</h1>
 
+        @if ($message = Session::get('success'))
+            <div class="message success">
+                {{ $message }}
+            </div>
+        @endif
+
+        @if ($message = Session::get('error'))
+            <div class="message error">
+                {{ $message }}
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="message error">
+                {{ $errors->first() }}
+            </div>
+        @endif
+
         <form action="{{ route('register.submit') }}" method="POST">
             @csrf
             
             <div class="form-group">
-                <label for="username">Tên đăng nhập</label>
+                <label for="name">Họ và tên</label>
                 <input 
                     type="text" 
-                    id="username" 
-                    name="username" 
-                    placeholder="Nhập tên đăng nhập"
+                    id="name" 
+                    name="name" 
+                    placeholder="Nhập họ và tên"
+                    value="{{ old('name') }}"
                     required
                 >
             </div>
@@ -154,41 +173,29 @@
                     id="email" 
                     name="email" 
                     placeholder="Nhập email"
+                    value="{{ old('email') }}"
                     required
                 >
             </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="password">Mật khẩu</label>
-                    <input 
-                        type="password" 
-                        id="password" 
-                        name="password" 
-                        placeholder="Nhập mật khẩu"
-                        required
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label for="phone">Số điện thoại</label>
-                    <input 
-                        type="tel" 
-                        id="phone" 
-                        name="phone" 
-                        placeholder="Nhập số điện thoại"
-                        required
-                    >
-                </div>
+            <div class="form-group">
+                <label for="password">Mật khẩu</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    placeholder="Nhập mật khẩu"
+                    required
+                >
             </div>
 
             <div class="form-group">
-                <label for="mssv">MSSV (Mã số sinh viên)</label>
+                <label for="password_confirmation">Nhập lại mật khẩu</label>
                 <input 
-                    type="text" 
-                    id="mssv" 
-                    name="mssv" 
-                    placeholder="Nhập mã số sinh viên"
+                    type="password" 
+                    id="password_confirmation" 
+                    name="password_confirmation" 
+                    placeholder="Nhập lại mật khẩu"
                     required
                 >
             </div>

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AgeController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Middleware\CheckTimeAccess;
 use App\Http\Middleware\CheckAge;
 
@@ -40,6 +41,9 @@ Route::get('/admin', function () {
 Route::middleware(CheckTimeAccess::class)->group(function () {
     Route::resource('product', ProductController::class);
 });
+
+// Category Routes (resourceful)
+Route::resource('category', CategoryController::class);
 
 Route::get('/sinhvien/{name?}/{mssv?}', function ($name = 'Hoàng Văn Đức', $mssv = '0005067') {
     return view('sinhvien', [

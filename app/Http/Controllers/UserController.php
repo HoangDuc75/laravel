@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -18,25 +21,36 @@ class UserController extends Controller
 
     public function checkLogin(Request $request)
     {
-        if ($request->input('username') == 'HoangDuc' && $request->input('password') == '123456') {
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+
             return redirect()->route('home')->with('success', 'Đăng nhập thành công!');
-        } else {
-            return redirect()->back()->with('error', 'Tên đăng nhập hoặc mật khẩu không chính xác!');
         }
+
+        return back()
+            ->with('error', 'Email hoặc mật khẩu không chính xác!')
+            ->withInput($request->only('email'));
     }
     
     public function checkRegister(Request $request)
     {
-        $username = $request->input('username');
-        $email = $request->input('email');
-        $password = $request->input('password');
-        $phone = $request->input('phone');
-        $mssv = $request->input('mssv');
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
 
-        return "Registration successful!<br>" .
-            "Username: $username<br>" .
-            "Email: $email<br>" .
-            "Phone: $phone<br>" .
-            "MSSV: $mssv";
+        User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+        ]);
+
+        return redirect()->route('login')->with('success', 'Đăng ký thành công! Vui lòng đăng nhập.');
     }
 }

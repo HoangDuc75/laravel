@@ -137,15 +137,22 @@
             </div>
         @endif
 
+        @if ($errors->any())
+            <div class="message error">
+                {{ $errors->first() }}
+            </div>
+        @endif
+
         <form action="{{ route('login.submit') }}" method="POST">
             @csrf
             <div class="form-group">
-                <label for="username">Tên đăng nhập</label>
+                <label for="email">Email</label>
                 <input 
-                    type="text" 
-                    id="username" 
-                    name="username" 
-                    placeholder="Nhập tên đăng nhập"
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    placeholder="Nhập email"
+                    value="{{ old('email') }}"
                     required
                 >
             </div>
